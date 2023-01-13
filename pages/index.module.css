@@ -77,7 +77,7 @@
 .chat {
   display: inline-block;
   max-width: 900px;
-  width: 65%;
+  width: 60%;
   padding: 2em;
   vertical-align: top;
   border-radius: 1em;
@@ -108,4 +108,23 @@
 .partners {
   max-width: 28%;
   margin: 2%;
+}
+
+@media (max-width: 856px) {
+  .chat {
+    width: 90%;
+    margin: 0 auto;
+    padding: 1em;
+  }
+
+  .chatbox {
+    height: 50vh!important;
+  }
+  
+  .about {
+    max-width: 80%;
+    min-width: 280px;
+    margin: 2em auto;
+    padding: 1em;
+  }
 }
