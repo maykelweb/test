@@ -15,15 +15,9 @@
   font-style: normal;
 }
 
-.body {
-  margin: 0;
-  padding: 0;
-  background-color: black;
-}
-
 .container {
   text-align: center;
-  margin: 100px 0;
+  margin: 50px 20px;
 }
 
 .main,
@@ -34,14 +28,6 @@
   font-family: "ColfaxAI", Helvetica, sans-serif;
 }
 .main {
-  background-color: #fcfcfc;
-  border: solid 1px #e0e0e0;
-  border-radius: 1em;
-  display: inline-block;
-  align-items: center;
-  padding: 2em;
-  margin: 0 auto;
-
 }
 .main .icon {
   width: 100px;
@@ -50,13 +36,13 @@
   font-size: 32px;
   line-height: 40px;
   font-weight: bold;
-  color: #202123;
-  margin: 16px 0 40px;
+  color: #fff;
+  margin: 0 0 20px;
 }
 .main form {
   display: flex;
   flex-direction: column;
-  width: 320px;
+  width: 100%;
 }
 .main input[type="text"] {
   padding: 12px 16px;
@@ -78,13 +64,48 @@
   text-align: center;
   cursor: pointer;
 }
-.main .result {
+.main .chatbox {
   background: white;
   border: 1px solid rgb(187, 187, 187);
-  border-radius: 1em;
-  padding: 20px;
+  border-radius: 0.5em;
   margin: 20px 0;
   text-align: left;
-  min-height: 100px;
-  max-width: 278px;
+  height: 250px;
+  overflow-y: scroll;
+}
+
+.chat {
+  display: inline-block;
+  max-width: 900px;
+  width: 65%;
+  padding: 2em;
+  vertical-align: top;
+  border-radius: 1em;
+  background-color: #6ac3c8;
+}
+.chatbox p {
+  padding: 0;
+  margin: 0;
+}
+.healthchat__messages {
+  padding: 1em; 
+  background-color: #f4f4f4;
+}
+.user__messages {
+  padding: 1em; 
+  background-color: #fff;
+}
+
+.about {
+  width: 20%;
+  padding: 2%;
+  margin: 0 2em;
+  display: inline-block;
+  border-radius: 1em;
+  background-color: #6ac3c8;
+}
+
+.partners {
+  max-width: 28%;
+  margin: 2%;
 }
