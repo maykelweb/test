@@ -16,6 +16,7 @@ export default async function (req, res) {
   }
 
   const chat = req.body.chat || '';
+  const context = req.body.context || '';
   if (chat.trim().length === 0) {
     res.status(400).json({
       error: {
@@ -27,11 +28,18 @@ export default async function (req, res) {
 
   try {
     const completion = await openai.createCompletion({
+      model: "curie:ft-personal:nhs-ai-2023-01-17-11-47-55",
+      //model: "curie",
       //model: "text-davinci-003",
-      model: "text-ada-001",
-      prompt: generatePrompt(chat),
+      //model: "text-curie-001",
+      //model: "text-babbage-001",
+      //model: "text-ada-001",
+      //prompt: generatePrompt(chat, context),
+      //prompt: context + "\n" + chat,
+      prompt: generatePrompt(context),
       temperature: 0.6,
-      max_tokens: 500, 
+      max_tokens: 200, 
+	    stop: "You:"
     });
     res.status(200).json({ result: completion.data.choices[0].text });
   } catch(error) {
@@ -50,8 +58,8 @@ export default async function (req, res) {
   }
 }
 
-function generatePrompt(chat) {
-  const capitalizedChat =
-    chat[0].toUpperCase() + chat.slice(1).toLowerCase();
-  return `Responding as a doctor, when answering this question: ${capitalizedChat}`;
+function generatePrompt(context) {
+ //return `Imagine a long text message chat log between a friendly ai and a user. The ai tries to answer questions but also ask follow-up questions to customize and improve the answer for the user. \n' ${context}`;
+ return `Imagine a long text message chat log between a friendly ai and a user. The ai is instructed to give healthcare diagnosis and advice for symptoms based on medical advice from trusted sources and to ask questions to improve the answer for the user. '${context}`;
+ //return `Imagine a long text message chat log between a doctor and a user. The doctor uses compassionate listening to help her clients get better. He asks questions to customize and improve the answer for the user. \n user: '${chat}'} ->`;
 }

@@ -13,11 +13,27 @@ export default function Home() {
 
     const div = document.createElement("div");
     div.className = styles.user__messages;
-    div.innerHTML = `<p><span>You:</span> ${chatInput}</p>`;
+    div.innerHTML = `<p>You: ${chatInput}</p>`;
     chatbox.appendChild(div);
     chatbox.scrollTop = chatbox.scrollHeight;
     
     setChatInput("");
+
+    // Get the last 3 messages from the chatbox
+    let previousChat = chatbox.querySelectorAll("p");
+    let chatContext = "";
+
+    if (previousChat.length > 3) {
+      previousChat = Array.from(previousChat).slice(-3);
+    }
+
+    previousChat.forEach(function(el) {
+      chatContext += el.innerHTML + "/n";
+    });
+    // Add ending to context
+    chatContext += "Health Chat: ";
+
+    console.log(chatContext);
 
     try {
       const response = await fetch("/api/generate", {
@@ -25,7 +41,7 @@ export default function Home() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ chat: chatInput }),
+        body: JSON.stringify({ chat: chatInput, context: chatContext }),
       });
       
       setChatInput("");
@@ -40,9 +56,10 @@ export default function Home() {
       const chatbox = document.querySelector("#chatbox");
       const div = document.createElement("div");
       div.className = styles.healthchat__messages;
-      div.innerHTML = `<p><span>Health Chat:</span> ${data.result}</p>`;
+      div.innerHTML = `<p>Health Chat: ${data.result}</p>`;
       chatbox.appendChild(div);
       chatbox.scrollTop = chatbox.scrollHeight;
+
 
     } catch(error) {
       // Consider implementing your own error handling logic here
@@ -55,7 +72,7 @@ export default function Home() {
     <div className={styles.container}>
       <Head>
         <title>Health Chat</title>
-        <link rel="icon" href="/health-chat-logo.jpg" />
+        <link rel="icon" href="/health-logo.png" />
       </Head>
 
       <main className={styles.main}>
@@ -64,7 +81,7 @@ export default function Home() {
         
           <div id="chatbox" className={styles.chatbox}>
             <div className={styles.healthchat__messages}>
-              <p><span>Health Chat:</span> You are now talking to Healthchat, here to answer all your healthcare needs. Just so you know, I am not a licensed doctor, but I do use the latest NHS information, and can also give guidance on natural remedies and nutritional information that could help your health if asked.</p>
+              <p>Health Chat: You are now talking to Healthchat, here to answer all your healthcare needs. Just so you know, I am not a licensed doctor, but I do use the latest NHS information, and can also give guidance on natural remedies and nutritional information that could help your health if asked.</p>
             </div>
           </div>
         
