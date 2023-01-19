@@ -76,9 +76,10 @@ export default function Home() {
       </Head>
 
       <main className={styles.main}>
-        <div className={styles.chat}>
-          <h3>Health Chat</h3>
         
+        <h3>Health Chat</h3>
+        
+        <div className={styles.chat}>
           <div id="chatbox" className={styles.chatbox}>
             <div className={styles.healthchat__messages}>
               <p>Health Chat: You are now talking to Healthchat, here to answer all your healthcare needs. Just so you know, I am not a licensed doctor, but I do use the latest NHS information, and can also give guidance on natural remedies and nutritional information that could help your health if asked.</p>
@@ -97,17 +98,9 @@ export default function Home() {
           </form>
         </div>
         <div className={styles.about}>
-          <img src="/health-chat-logo.jpg" className={styles.icon} />
-          <p> The most advanced Ai healthcare assistant that can give you an instant diagnosis and treatment plan based on your symptoms. </p>
-          <p>
-          Take the guesswork out of healthcare! Get the best diagnosis and treatment advice from trusted sources based on your input.
-          </p>
-
-          <div>
             <img src="/the-bag.jpg" className={styles.partners} />
             <img src="/harley-street.jpg" className={styles.partners} />
             <img src="/dtm-global.jpg" className={styles.partners} />
-          </div>
         </div>
       </main>
     </div>
