@@ -44,7 +44,7 @@ export default function Home() {
         }
 
         //Set context
-        context = "The following is a conversation with an user and AI. The Ai listens and tries to find out the user's symptons using the conversation and context that is not visible to the user.\n\n context:"
+        context = "The following is a conversation with an user and AI. The Ai listens and tries to guess the user's symptoms using the conversation and context that is not visible to the user. If the ai needs more information to make a guess it will ask follow up questions. \n\n context:"
 
         // Get all semantic matches and add to context
         for (let i = 0; i < matchData.result.length; i++) {
@@ -137,6 +137,11 @@ export default function Home() {
 
       chatbox.appendChild(div);
       chatbox.s
+
+      // Debug
+      const results = document.querySelector("#results");
+      results.innerHTML = `<p>'${context}'</p>`;
+
       
     } catch (error) {
       // Consider implementing your own error handling logic here
