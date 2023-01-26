@@ -16,7 +16,6 @@ export default async function (req, res) {
   }
 
   const chat = req.body.chat || '';
-  const context = req.body.context || '';
   if (chat.trim().length === 0) {
     res.status(400).json({
       error: {
@@ -36,7 +35,7 @@ export default async function (req, res) {
       //model: "text-ada-001",
       //prompt: generatePrompt(chat, context),
       //prompt: context + "\n" + chat,
-      prompt: generatePrompt(context),
+      prompt: generatePrompt(chat),
       temperature: 0.6,
       max_tokens: 200, 
 	    stop: "/n"

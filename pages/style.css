@@ -1,7 +1,24 @@
-body {
-    background-color: #486867
-}
-
 * {
     font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen,Ubuntu,Cantarell,Fira Sans,Droid Sans,Helvetica Neue,sans-serif;
+}
+
+body {
+    background-color: #fff;
+    margin: 0;
+    padding: 0;
+}
+
+#chatHeader {
+    background-color: #fbfcfb;
+    margin: 0;
+    padding: 1em;
+    text-align: left;
+    box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+}
+
+#chatHeader h2 {
+    display: inline-block;
+    vertical-align: top;
+    line-height: 0.5em;
+    margin-left: 0.5em;
 }
