@@ -36,7 +36,23 @@
 .main .chat {
   padding: 1em;
   display: flex;
+  text-align: left;
   flex-direction: column;
+}
+
+.main .logoIcon {
+  vertical-align: middle;
+  max-height: 2em;
+  display: inline-block;
+}
+
+.main .chat p {
+  display: inline-block;
+  color: white;
+  padding: 1em;
+  max-width: 80%;
+  border-radius: 0.5em;
+  background-color: rgb(13, 13, 171);
 }
 
 .main form {
@@ -47,9 +63,9 @@
   opacity: 1;
 }
 .main input[type="text"] {
-  width: 80%;
+  width: 95%;
   height: 1em;
-  padding: 1em;
+  padding: 2%;
   border: 1px solid black;
   border-radius: 2em;
 }

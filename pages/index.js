@@ -43,12 +43,10 @@ export default function Home() {
           throw matchData.error || new Error(`Request failed with status ${response.status}`);
         }
 
-        // Get the div to place the results
-        const resultbox = document.querySelector("#results");
-        resultbox.innerHTML = "";
-        let p = document.createElement("p");
+        //Set context
         context = "The following is a conversation with an user and AI. The Ai listens and tries to find out the user's symptons using the conversation and context that is not visible to the user.\n\n context:"
-        // Append the matches to the results div
+
+        // Get all semantic matches and add to context
         for (let i = 0; i < matchData.result.length; i++) {
           context += matchData.result[i].metadata.text;
           if (matchData.result[i].metadata.text.length > 300) {
@@ -68,10 +66,19 @@ export default function Home() {
     // Get chatbox
     const chat = document.querySelector("#chatbox");
 
-    //Create message div and add input with styling
+    //Create message div and add text with styling
     const div = document.createElement("div");
     div.className = styles.user__messages;
-    div.innerHTML = `<p>You: ${input}</p>`;
+    //create text element for user message
+    let userMessage = document.createElement("p");
+    // Set styling and message
+    userMessage.style.backgroundColor = "#f6f4fe";
+    userMessage.style.color = "black";
+    userMessage.innerHTML = input;
+    //Append to message div
+    div.appendChild(userMessage);
+    // align text right
+    div.style.textAlign = "right";
     chat.appendChild(div); // Add to chatbox
     chat.scrollTop = chat.scrollHeight; // Scroll to bottom to see new message
 
@@ -110,22 +117,27 @@ export default function Home() {
 
       setResult(data.result);
 
-      // append message as div to chatbox
+      // Append message as div to chatbox
+      // Get chatbox
       const chatbox = document.querySelector("#chatbox");
+      // Create the message div
       const div = document.createElement("div");
       div.className = styles.healthchat__messages;
-      div.innerHTML = `<p>Health Chat: ${data.result}</p>`;
-      chatbox.appendChild(div);
-      chatbox.scrollTop = chatbox.scrollHeight;
 
-      //Debug 
-      const resultbox = document.querySelector("#results");
-      resultbox.innerHTML = "";
+      //Create img and add to div
+      let img = document.createElement("img");
+      img.src = "/health-logo.png";
+      img.className = styles.logoIcon;
+      div.appendChild(img);
+
+      // Create p and add to div
       let p = document.createElement("p");
-      p.innerHTML = context;
-      resultbox.appendChild(p);
-      
+      p.innerHTML = data.result;
+      div.appendChild(p);
 
+      chatbox.appendChild(div);
+      chatbox.s
+      
     } catch (error) {
       // Consider implementing your own error handling logic here
       console.error(error);
@@ -153,7 +165,7 @@ export default function Home() {
           <div className={styles.chat}>
             <div id="chatbox">
               <div className={styles.healthchat__messages}>
-                <p>Hi, how can I help you?</p>
+              <img src="/health-logo.png" className={styles.logoIcon} /><p>Hi, how can I help you?</p>
               </div>
             </div>
 
