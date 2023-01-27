@@ -9,7 +9,8 @@ export default function Home() {
   const [result, setResult] = useState();
   const [error, setError] = useState(null);
   const memoryLength = 10;
-  var context = "The following is a conversation with a user and health chat. Health chat is helpful and listens to try to predict the user's condition based on the symptoms described by the user and the context that is not visible to the user. The health chat does not ask too many questions and will never mention the context to the user and refers to itself as I. \n\n context:"
+  var context = "The following is a conversation with a user and health chat. Health chat is helpful and listens to try to predict the user's medical condition based on the symptoms described by the user and the NHS information. The health chat likes to ask questions to improve the answer for the user and refers to itself as I. \n\n NHS information:";
+  //What are the keywords in this sentence that can be used to diagnose a medical condition with semantic searching: ""
 
   async function onSubmit(event) {
     event.preventDefault();
@@ -58,6 +59,8 @@ export default function Home() {
     aiDiv.appendChild(img);
     aiDiv.appendChild(loadingImg);
     chat.appendChild(aiDiv);
+
+    // Get keywords from user input
 
     try {
       const response = await fetch("/api/embed", {
