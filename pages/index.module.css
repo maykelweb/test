@@ -81,6 +81,7 @@
   border: 1px solid black;
   border-radius: 2em;
   box-shadow: 0 0 2px 2px rgba(0,0,0,0.06);
+  margin-left: -20px;
 }
 .main input[type="submit"] {
   margin-left: -50px;
