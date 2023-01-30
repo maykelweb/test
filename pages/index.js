@@ -12,7 +12,7 @@ export default function Home() {
   const [result, setResult] = useState();
   const [error, setError] = useState(null);
   const memoryLength = 10;
-  var context = "The following is a conversation with a user and health chat. Health chat is helpful and listens to try to predict the user's medical condition based on the symptoms described by the user and the NHS information. The health chat likes to ask questions to improve the answer for the user and refers to itself as I. \n\n NHS information:";
+  var context = "The following is a conversation with a user and health chat. Health chat is helpful and listens to try to predict the user's medical condition based on the symptoms described by the user and the NHS information. The health chat likes to ask questions to improve the answer for the user and refers to itself as I. Health chat will only refer to see a gp if it is advised by the NHS information. \n\n NHS information:";
 
   async function onSubmit(event) {
     event.preventDefault();
