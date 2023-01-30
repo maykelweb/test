@@ -4,13 +4,15 @@ import styles from "./index.module.css";
 import { ThreeDots } from 'react-loader-spinner';
 import ReactDOM from 'react-dom';
 
+// Set query for diagnosis keywords
+var query = "I have ";
+
 export default function Home() {
   const [input, setInput] = useState("");
   const [result, setResult] = useState();
   const [error, setError] = useState(null);
   const memoryLength = 10;
   var context = "The following is a conversation with a user and health chat. Health chat is helpful and listens to try to predict the user's medical condition based on the symptoms described by the user and the NHS information. The health chat likes to ask questions to improve the answer for the user and refers to itself as I. \n\n NHS information:";
-  //What are the keywords in this sentence that can be used to diagnose a medical condition with semantic searching: ""
 
   async function onSubmit(event) {
     event.preventDefault();
@@ -60,15 +62,42 @@ export default function Home() {
     aiDiv.appendChild(loadingImg);
     chat.appendChild(aiDiv);
 
-    // Get keywords from user input
+    
+    try {// Query the API for any words that can be used to diagnose a medical condition
+      const response = await fetch("/api/generate", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ chat: "If there are any symptoms in this sentence list them out in one sentence :" + input + " Symptoms:'"}),
+      });
 
-    try {
+      const data = await response.json();
+      if (response.status !== 200) {
+        throw data.error || new Error(`Request failed with status ${response.status}`);
+      }
+
+      // Add result to query string
+      // Check if no symptoms are found
+      if (data.result != "No symptoms." || data.result != "None") {
+        let string = data.result;
+        console.log(query + string)
+        query += " " + string;
+      }
+
+    } catch (error) {
+      console.error(error);
+      alert(error.message);
+    }
+
+    console.log(query)
+    try { // Embed the keywords
       const response = await fetch("/api/embed", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ input: input }),
+        body: JSON.stringify({ input: query }),
       });
 
       const data = await response.json();
