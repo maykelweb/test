@@ -4,6 +4,27 @@ import styles from "./index.module.css";
 import { ThreeDots } from 'react-loader-spinner';
 import ReactDOM from 'react-dom';
 import ThumbsForm from './ThumbsForm';
+const { Pool } = require('pg');
+
+const pool = new Pool({
+  host: 'www.webkel.co.uk',
+  user: 'ugsx3zta6hg6n',
+  password: 'sq@>^Rt41@:4',
+  database: 'dbzobeizw7etun'
+});
+
+pool.connect((err, client, release) => {
+  if (err) {
+    return console.error('Error acquiring client', err.stack)
+  }
+  client.query('SELECT NOW()', (err, result) => {
+    release();
+    if (err) {
+      return console.error('Error executing query', err.stack)
+    }
+    console.log(`Connected to the PostgreSQL database! Current Time is: ${result.rows[0].now}`);
+  });
+});
 
 export default function Home() {
   const [input, setInput] = useState("");
@@ -19,8 +40,6 @@ export default function Home() {
 
     // Clear the input
     setInput("");
-
-    setQuery("I have ");
 
     // Add user message to chatbox
     // Get chatbox
@@ -64,7 +83,7 @@ export default function Home() {
     chat.appendChild(aiDiv);
     
     //Get the symptoms by asking gpt3 to process the input
-    if (input !== "") {
+    if (input.trim().length > 0) {
       try {// Query the API for any words that can be used to diagnose a medical condition
         const response = await fetch("/api/generate", {
           method: "POST",
@@ -82,9 +101,13 @@ export default function Home() {
         // Add result to query string
         // Check the word  'None.' is found in data.result
         if (data.result.includes("None.")) {
-          query += "no symptoms";
         } else {
-          setQuery("I have " + data.result.toString());
+          if (query == null) {
+            query = "I have " + data.result;
+          } else {
+            query += ", " + data.result;
+            setQuery(query);
+          }
         }
   
       } catch (error) {
@@ -93,8 +116,10 @@ export default function Home() {
       }
     }
 
-    if (query !== "I have ") {
+    // check if query is null
+    if (query != null) {
       try { // Embed the keywords
+        console.log(query)
         const response = await fetch("/api/embed", {
           method: "POST",
           headers: {
@@ -139,7 +164,6 @@ export default function Home() {
         console.log(error)
       }
     }
-
     // Get the last 3 messages from the chatbox
     let previousChat = chat.querySelectorAll("p");
     let chatContext = "";
@@ -187,8 +211,8 @@ export default function Home() {
       aiDiv.appendChild(p);
 
       // Debug
-      //const results = document.querySelector("#results");
-      //results.innerHTML = `<p>'${context}'</p>`;
+      const results = document.querySelector("#results");
+      results.innerHTML = `<p>'${context}'</p>`;
 
       console.log(context)
       console.log("\nQuery:" + query)
@@ -245,6 +269,7 @@ export default function Home() {
               You are now talking to Healthchat, here to answer all your healthcare needs. Just so you know, I am not a licensed doctor, but I do use the latest NHS information, and can also give guidance on natural remedies and nutritional information that could help your health if asked.
             </p>
           </div>
+          <h4 id="results">{context}</h4>
           <h3> Our Partners </h3>
           <div className={styles.partners}>
             <a href="#"><img src="/the-bag.jpg" href="" title="Our Partners" /></a>
