@@ -3,16 +3,15 @@ import { useState } from "react";
 import styles from "./index.module.css";
 import { ThreeDots } from 'react-loader-spinner';
 import ReactDOM from 'react-dom';
-
-// Set query for diagnosis keywords
-var query = "I have ";
+import ThumbsForm from './ThumbsForm';
 
 export default function Home() {
   const [input, setInput] = useState("");
   const [result, setResult] = useState();
+  var [query, setQuery] = useState();
   const [error, setError] = useState(null);
   const memoryLength = 10;
-  var context = "The following is a conversation with a user and health chat. Health chat is helpful and listens to try to predict the user's medical condition based on the symptoms described by the user and the NHS information. The health chat likes to ask questions to improve the answer for the user and refers to itself as I. Health chat will only refer to see a gp if it is advised by the NHS information. \n\n NHS information:";
+  var context = "The following is a conversation with a user and health chat. Health chat is helpful and listens to try to predict the user's medical condition based on the symptoms described by the user and the NHS information. The health chat likes to ask questions to improve the answer for the user and refers to itself as I. Health chat will only refer to see a gp if it is advised by the NHS information and will explain why. At the end of the conversation, the ai will ask something like 'Would you like some more ideas that could help?' \n\n";
 
   async function onSubmit(event) {
     event.preventDefault();
@@ -20,6 +19,8 @@ export default function Home() {
 
     // Clear the input
     setInput("");
+
+    setQuery("I have ");
 
     // Add user message to chatbox
     // Get chatbox
@@ -61,78 +62,82 @@ export default function Home() {
     aiDiv.appendChild(img);
     aiDiv.appendChild(loadingImg);
     chat.appendChild(aiDiv);
-
     
-    try {// Query the API for any words that can be used to diagnose a medical condition
-      const response = await fetch("/api/generate", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ chat: "If there are any symptoms in this sentence list them out in one sentence :" + input + " Symptoms:'"}),
-      });
-
-      const data = await response.json();
-      if (response.status !== 200) {
-        throw data.error || new Error(`Request failed with status ${response.status}`);
-      }
-
-      // Add result to query string
-      // Check if no symptoms are found
-      if (data.result != "No symptoms." || data.result != "None") {
-        let string = data.result;
-        console.log(query + string)
-        query += " " + string;
-      }
-
-    } catch (error) {
-      console.error(error);
-      alert(error.message);
-    }
-
-    console.log(query)
-    try { // Embed the keywords
-      const response = await fetch("/api/embed", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ input: query }),
-      });
-
-      const data = await response.json();
-      if (response.status !== 200) {
-        throw data.error || new Error(`Request failed with status ${response.status}`);
-      }
-
-      try {
-        const response = await fetch("/api/match", {
+    //Get the symptoms by asking gpt3 to process the input
+    if (input !== "") {
+      try {// Query the API for any words that can be used to diagnose a medical condition
+        const response = await fetch("/api/generate", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ vector: data.result }),
+          body: JSON.stringify({ chat: "If there are any symptoms in this sentence list them out in one sentence if there are none say 'None.': '" + input + "' Symptoms:"}),
         });
-
-        const matchData = await response.json();
+  
+        const data = await response.json();
         if (response.status !== 200) {
-          throw matchData.error || new Error(`Request failed with status ${response.status}`);
+          throw data.error || new Error(`Request failed with status ${response.status}`);
         }
+  
+        // Add result to query string
+        // Check the word  'None.' is found in data.result
+        if (data.result.includes("None.")) {
+          query += "no symptoms";
+        } else {
+          setQuery("I have " + data.result.toString());
+        }
+  
+      } catch (error) {
+        console.error(error);
+        alert(error.message);
+      }
+    }
 
-        // Get all semantic matches and add to context
-        for (let i = 0; i < matchData.result.length; i++) {
-          context += matchData.result[i].metadata.text;
-          if (matchData.result[i].metadata.text.length > 300) {
-            break;
+    if (query !== "I have ") {
+      try { // Embed the keywords
+        const response = await fetch("/api/embed", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ input: query }),
+        });
+  
+        const data = await response.json();
+        if (response.status !== 200) {
+          throw data.error || new Error(`Request failed with status ${response.status}`);
+        }
+  
+        try {
+          const response = await fetch("/api/match", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ vector: data.result }),
+          });
+  
+          const matchData = await response.json();
+          if (response.status !== 200) {
+            throw matchData.error || new Error(`Request failed with status ${response.status}`);
           }
+  
+          // Get all semantic matches and add to context
+          context +=  " NHS information:"
+          for (let i = 0; i < matchData.result.length; i++) {
+            context += matchData.result[i].metadata.text;
+            if (matchData.result[i].metadata.text.length > 400) {
+              break;
+            }
+          }
+  
+        } catch (error) {
+          console.log(error)
         }
-
+  
       } catch (error) {
         console.log(error)
       }
-
-    } catch (error) {
-      console.log(error)
     }
 
     // Get the last 3 messages from the chatbox
@@ -186,6 +191,7 @@ export default function Home() {
       //results.innerHTML = `<p>'${context}'</p>`;
 
       console.log(context)
+      console.log("\nQuery:" + query)
 
     } catch (error) {
       // Consider implementing your own error handling logic here
@@ -212,9 +218,13 @@ export default function Home() {
             <div id="chatbox">
               <div className={styles.healthchat__messages}>
                 <img src="/health-logo.png" className={styles.logoIcon} /><p> Hi, how can I help? </p>
-
               </div>
             </div>
+          </div>
+
+          <div className={styles.rating}>
+            <h4> Rate this chat </h4>
+            <ThumbsForm />
           </div>
 
           <form onSubmit={onSubmit}>
