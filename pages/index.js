@@ -4,27 +4,6 @@ import styles from "./index.module.css";
 import { ThreeDots } from 'react-loader-spinner';
 import ReactDOM from 'react-dom';
 import ThumbsForm from './ThumbsForm';
-const { Pool } = require('pg');
-
-const pool = new Pool({
-  host: 'www.webkel.co.uk',
-  user: 'ugsx3zta6hg6n',
-  password: 'sq@>^Rt41@:4',
-  database: 'dbzobeizw7etun'
-});
-
-pool.connect((err, client, release) => {
-  if (err) {
-    return console.error('Error acquiring client', err.stack)
-  }
-  client.query('SELECT NOW()', (err, result) => {
-    release();
-    if (err) {
-      return console.error('Error executing query', err.stack)
-    }
-    console.log(`Connected to the PostgreSQL database! Current Time is: ${result.rows[0].now}`);
-  });
-});
 
 export default function Home() {
   const [input, setInput] = useState("");
@@ -32,7 +11,7 @@ export default function Home() {
   var [query, setQuery] = useState();
   const [error, setError] = useState(null);
   const memoryLength = 10;
-  var context = "The following is a conversation with a user and health chat. Health chat is helpful and listens to try to predict the user's medical condition based on the symptoms described by the user and the NHS information. The health chat likes to ask questions to improve the answer for the user and refers to itself as I. Health chat will only refer to see a gp if it is advised by the NHS information and will explain why. At the end of the conversation, the ai will ask something like 'Would you like some more ideas that could help?' \n\n";
+  var context = "The following is a conversation with a user and health chat. Health chat is helpful and listens to try to predict the user's medical condition based on the symptoms described by the user and the NHS information. The health chat likes to ask questions to improve the answer for the user and refers to itself as I. Health chat will never suggest to speak with a gp. At the end of the conversation, the ai will ask something like 'Would you like some more ideas that could help?' \n\n";
 
   async function onSubmit(event) {
     event.preventDefault();

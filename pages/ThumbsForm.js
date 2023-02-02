@@ -8,28 +8,15 @@ const ThumbsForm = () => {
 
     // Save conversation to text file
     // Get conversation
-    var conversation = document.getElementById("chatbox").innerText;
+    var context = document.getElementById("results").innerHTML;
 
-    // Break text into lines
-    var textLines = conversation.split(/\r\n|\n/);
-    // remove empty lines
-    textLines = textLines.filter(function (el) { return el != ""; });
-
-    // loop through lines and if i is even add "user" to the start of the line
-    for (var i = 0; i < textLines.length; i++) {
-      if (i % 2 == 0) {
-        textLines[i] = "Health Chat: " + textLines[i] + "\n";
-      } else {
-        textLines[i] = "User: " + textLines[i] + "\n";
-      }
-    }
-
+    //Save context to text file
     // Save to file
     // Create element with <a> tag
 const link = document.createElement("a");
 
 // Create a blog object with the file content which you want to add to the file
-const file = new Blob([content.replace(/,/g, "\n")], { type: 'text/plain' });
+const file = new Blob([context], { type: "text/plain;charset=utf-8" });
 
 // Add file content in the object URL
 link.href = URL.createObjectURL(file);
