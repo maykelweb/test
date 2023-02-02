@@ -158,7 +158,7 @@ export default function Home() {
       //results.innerHTML = `<p>'${context}'</p>`;
 
       console.log(context)
-      //console.log("\nQuery:" + query)
+      //console.log("\nQuery:" + query) //
 
     } catch (error) {
       // Consider implementing your own error handling logic here
